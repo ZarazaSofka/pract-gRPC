@@ -1,0 +1,25 @@
+syntax = "proto3";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/duration.proto";
+
+service TaskService {
+    rpc GetAll (Empty) returns (TaskList) {}
+    rpc Get (TaskRequestId) returns (Task) {}
+    rpc Insert (Task) returns (Task) {}
+    rpc Update (Task) returns (Task) {}
+    rpc Remove (TaskRequestId) returns (Empty) {}
+}
+message Empty {}
+message Task {
+    string id = 1;
+    string task = 2;
+    string theme = 3;
+    google.protobuf.Duration duration = 4;
+    google.protobuf.Timestamp creationDate = 5;
+}
+message TaskList {
+    repeated Task tasks = 1;
+}
+message TaskRequestId {
+    string id = 1;
+}

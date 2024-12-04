@@ -1,0 +1,249 @@
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <title>Список задач</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css"
+      integrity="sha384-zCbKRCUGaJDkqS1kPbPd7TveP5iyJE0EjAuZQTgFLD2ylzuqKfdKlfG/eSrtxUkn"
+      crossorigin="anonymous"
+    />
+    <style>
+      .tasks { color: white; border-radius: 30px; padding-top: 3px;
+      padding-bottom: 3px; padding-left: 3px; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="py-5 text-left">
+        <h2>Список задач</h2>
+      </div>
+      <table class="table" id="tasks_table">
+        <thead>
+          <tr>
+            <th>ID Задачи</th>
+            <th>Задача</th>
+            <th>Тематика</th>
+            <th>Время выполнения</th>
+            <th>Дата создания</th>
+            <th>Действия</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each results}}
+            <tr>
+              <td>{{id}}</td>
+              <td>{{task}}</td>
+              <td>{{theme}}</td>
+              <td>{{duration}}</td>
+              <td>{{creationDate}}</td>
+              <td>
+                <a
+                  href="javascript:void(0);"
+                  class="btn btn-sm btn-secondary tasks edit"
+                  data-id="{{id}}"
+                  data-task="{{task}}"
+                  data-theme="{{theme}}"
+                  data-duration="{{duration}}"
+                  data-creationDate="{{creationDate}}"
+                >Изменить</a>
+                <a
+                  href="javascript:void(0);"
+                  class="btn btn-sm tasks btn-danger remove"
+                  data-id="{{id}}"
+                >Удалить</a>
+              </td>
+            </tr>
+          {{else}}
+            <tr>
+              <td colspan="5" class="text-center">
+                Нет данных для отображения на форме
+              </td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
+      <button
+        class="btn btn-success float-right"
+        data-toggle="modal"
+        data-target="#newTaskModal"
+      >
+        Добавить новую задачу
+      </button>
+    </div>
+    <!-- Новое окно добавления пользователя -->
+    <form action="/save" method="post">
+      <div class="modal fade" id="newTaskModal" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Добавление новой задачи</h4>
+              <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="task"
+                  class="form-control"
+                  placeholder="Задача"
+                  required="required"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="theme"
+                  class="form-control"
+                  placeholder="Тематика"
+                  required="required"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="time"
+                  name="duration"
+                  class="form-control"
+                  placeholder="Время выполнения"
+                  required="required"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button type="submit" class="btn btn-success tasks">
+                Создать
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Окно редактирования данных абонента-->
+    <form action="/update" method="post">
+      <div class="modal fade" id="editTaskModal" role="dialog">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Изменить задачу</h4>
+              <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="task"
+                  class="form-control"
+                  placeholder="Задача"
+                  required="required"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="text"
+                  name="theme"
+                  class="form-control"
+                  placeholder="Тематика"
+                  required="required"
+                />
+              </div>
+              <div class="form-group">
+                <input
+                  type="time"
+                  name="duration"
+                  class="form-control"
+                  placeholder="Время выполнения"
+                  required="required"
+                />
+              </div>
+            </div>
+            <div class="modal-footer">
+              <input type="hidden" name="id" class="task_id" />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button type="submit" class="btn btn-success tasks">
+                Обновить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <!-- Окно удаления абонента из списка-->
+    <form id="add-row-form" action="/remove" method="post">
+      <div
+        class="modal fade"
+        id="removeTaskModal"
+        role="dialog"
+        aria-labelledby="myModalLabel"
+      >
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">Удалить задачу</h4>
+              <button type="button" class="close" data-dismiss="modal">
+                <span>&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              Вы действительно хотите удалить данную задачу?
+            </div>
+            <div class="modal-footer">
+              <input
+                type="hidden"
+                name="task_id"
+                class="form-control task_id_removal"
+                required="required"
+              />
+              <button
+                type="button"
+                class="btn btn-secondary"
+                data-dismiss="modal"
+              >
+                Закрыть
+              </button>
+              <button type="submit" class="btn btn-danger tasks">
+                Удалить
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </form>
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      $(document).ready(function () { $("#tasks_table") .on("click", ".edit",
+      function () { $("#editTaskModal").modal("show");
+      $(".task_id").val($(this).data("id"));
+      $(".task").val($(this).data("task"));
+      $(".theme").val($(this).data("theme"));
+      $(".duration").val($(this).data("duration")); }) .on("click", ".remove",
+      function () { $("#removeTaskModal").modal("show");
+      $(".task_id_removal").val($(this).data("id")); }); });
+    </script>
+  </body>
+</html>
